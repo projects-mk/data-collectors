@@ -1,0 +1,12 @@
+pandas
+aiohttp
+asyncio
+beautifulsoup4
+requests
+soupsieve
+numpy
+sqlalchemy
+psycopg2-binary
+nest_asyncio
+uvicorn
+fastapi

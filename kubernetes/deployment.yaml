@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-collectors-deployment  # updated name
+  namespace: data-collectors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-collector
+  template:
+    metadata:
+      labels:
+        app: data-collector
+    spec:
+      containers:
+      - name: data-collector
+        image: registry-c6af1e1a-8717-4821-9c1f-895998bf4e9c.cytr.us/portfolio/data-collectors:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "2"
+            memory: "8Gi"
+        envFrom:
+        - secretRef:
+            name: postgres-secret
+      imagePullSecrets:
+      - name: gitea-creds
