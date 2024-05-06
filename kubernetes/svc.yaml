@@ -6,7 +6,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: data-collectors
+    app: data-collector
   ports:
     - protocol: TCP
       port: 8000
