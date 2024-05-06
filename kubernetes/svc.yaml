@@ -6,7 +6,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: data-collector
+    app: data-collectors
   ports:
     - protocol: TCP
       port: 8000
@@ -20,7 +20,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: data-collector
+    app: data-collectors
   ports:
     - protocol: TCP
       port: 8000
