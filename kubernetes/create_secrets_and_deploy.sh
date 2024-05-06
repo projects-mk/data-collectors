@@ -3,8 +3,8 @@ DOCKERHUB_TOKEN=$2
 NAMESPACE=data-collectors
 APP_NAME=data-collectors
 
-kubectl delete $APP_NAME-deployment -deployment -n $NAMESPACE 
-kubectl delete svc $APP_NAME-service -n $NAMESPACE
+kubectl delete services --all -n $NAMESPACE --ignore-not-found
+kubectl delete deployments --all -n $NAMESPACE --ignore-not-found
 
 kubectl create secret docker-registry gitea-creds \
     --docker-server=registry-c6af1e1a-8717-4821-9c1f-895998bf4e9c.cytr.us \
