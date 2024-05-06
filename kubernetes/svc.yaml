@@ -1,7 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: data-collector-service
+  name: data-collector-service-clusterip
+  namespace: data-collectors
+spec:
+  type: ClusterIP
+  selector:
+    app: data-collector
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-collector-service-nodeport
   namespace: data-collectors
 spec:
   type: NodePort
@@ -11,3 +25,4 @@ spec:
     - protocol: TCP
       port: 8000
       targetPort: 8000
+      nodePort: 32352
