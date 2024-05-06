@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: data-collector-service-clusterip
+  name: data-collectors-service-clusterip
   namespace: data-collectors
 spec:
   type: ClusterIP
@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: data-collector-service-nodeport
+  name: data-collectors-service-nodeport
   namespace: data-collectors
 spec:
   type: NodePort
