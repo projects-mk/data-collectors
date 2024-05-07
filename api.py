@@ -1,11 +1,18 @@
+from fastapi.logger import logger
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import create_engine
 import os
 import logging
 from otomoto.main import OtomotoScraper
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
+gunicorn_logger = logging.getLogger('gunicorn.error')
+logger.handlers = gunicorn_logger.handlers
+if __name__ != "main":
+    logger.setLevel(gunicorn_logger.level)
+else:
+    logger.setLevel(logging.DEBUG)
 
 app = FastAPI()
 
