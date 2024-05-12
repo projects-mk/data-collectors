@@ -33,17 +33,23 @@ class OtomotoScraper:
             soup = BeautifulSoup(html, 'html.parser')
             a_tags = soup.find_all('a')
             for tag in a_tags:
-                if tag.get('rel') == ['noreferrer']:
+                await asyncio.sleep(1)
+                if not type(tag.get('href')) == type(None) and 'https://www.otomoto.pl/osobowe/oferta/' in tag.get('href'):
                     links.append(tag.get('href'))
-        return links
+        return set(links)
 
     async def main_links(self) -> None:
         pages = range(1, self.max_pages+1)
-        tasks = [self.collect_links(page) for page in pages]
+        tasks = []
+        for page in pages:
+            await asyncio.sleep(1)
+            tasks.append(self.collect_links(page))
+
         pages_links = await asyncio.gather(*tasks)
         self.links = [link for links in pages_links for link in links]
 
     async def parse(self, link: str) -> None:
+        await asyncio.sleep(15)
         async with aiohttp.ClientSession() as session:
             html = await self.fetch(session, link)
 
