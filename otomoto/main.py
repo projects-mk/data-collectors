@@ -50,7 +50,7 @@ class OtomotoScraper:
         self.links = [link for links in pages_links for link in links]
 
     async def parse(self, link: str) -> None:
-        await asyncio.sleep(15)
+        await asyncio.sleep(5)
         async with aiohttp.ClientSession() as session:
             html = await self.fetch(session, link)
 

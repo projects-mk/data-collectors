@@ -39,10 +39,10 @@ async def scrape_otomoto_data(start_page: int, end_page: int):
         raise HTTPException(status_code=500, detail=str(error))
 
 
-@app.get("/test/api/v1/getdata/otomoto?start_page=&")
-async def scrape_otomoto_data_test(start_page: int, end_page: int):
+@app.get("/test/api/v1/getdata/otomoto")
+async def scrape_otomoto_data_test():
     try:
-        get_otomoto_data(start_page, end_page)
+        get_otomoto_data(1, 2)
         return {'msg': 'success'}
     
     except Exception as error:
