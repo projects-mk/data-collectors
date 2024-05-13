@@ -17,21 +17,21 @@ else:
 app = FastAPI()
 
 
-def get_otomoto_data(max_pages: int):
+def get_otomoto_data(start_page: int = 1, end_page: int = 500):
     engine = create_engine(os.environ['DB_CONNECTION_STRING'])
     if engine.connect():
         logger.info('Connected to database')
         engine.dispose()
-    scraper = OtomotoScraper(max_pages)
+    scraper = OtomotoScraper(start_page, end_page)
     scraper.run()
     scraper.to_sql(os.environ['DB_CONNECTION_STRING'], 'otomoto_data')
     logger.info('Data saved to database')
 
 
 @app.get("/api/v1/getdata/otomoto")
-async def scrape_otomoto_data():
+async def scrape_otomoto_data(start_page: int, end_page: int):
     try:
-        get_otomoto_data(500)
+        get_otomoto_data(start_page, end_page)
         return {'msg': 'success'}
     
     except Exception as error:
@@ -39,10 +39,10 @@ async def scrape_otomoto_data():
         raise HTTPException(status_code=500, detail=str(error))
 
 
-@app.get("/test/api/v1/getdata/otomoto")
-async def scrape_otomoto_data_test():
+@app.get("/test/api/v1/getdata/otomoto?start_page=&")
+async def scrape_otomoto_data_test(start_page: int, end_page: int):
     try:
-        get_otomoto_data(5)
+        get_otomoto_data(start_page, end_page)
         return {'msg': 'success'}
     
     except Exception as error:

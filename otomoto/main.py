@@ -14,10 +14,11 @@ logger = logging.getLogger(__name__)
 
 
 class OtomotoScraper:
-    def __init__(self, max_pages: int = 500):
+    def __init__(self, start_page: int = 1, end_page: int = 500):
         self.data: List[Dict[str, Any]] = []
         self.links: List[str] = []
-        self.max_pages: int = max_pages
+        self.start_page: int = start_page
+        self.end_page: int = end_page
         if asyncio.get_event_loop().is_running():
             import nest_asyncio
             nest_asyncio.apply()
@@ -39,7 +40,7 @@ class OtomotoScraper:
         return set(links)
 
     async def main_links(self) -> None:
-        pages = range(1, self.max_pages+1)
+        pages = range(self.start_page, self.end_page+1)
         tasks = []
         for page in pages:
             await asyncio.sleep(1)
