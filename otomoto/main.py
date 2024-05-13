@@ -50,12 +50,12 @@ class OtomotoScraper:
         self.links = [link for links in pages_links for link in links]
 
     async def parse(self, link: str) -> None:
-        await asyncio.sleep(5)
+        await asyncio.sleep(1)
         async with aiohttp.ClientSession() as session:
             html = await self.fetch(session, link)
 
             soup = BeautifulSoup(html, 'html.parser')
-            css_selector = '#__next > div > div > div > main > div > section.ooa-j2bofk.e133w2fw0 > div.ooa-w4tajz.e18eslyg0'
+            css_selector = '#__next > div > div > div > main > div > section.ooa-1dludu4.ex721dv0 > div.ooa-w4tajz.e18eslyg0'
             element = sv.select_one(css_selector, soup)
             elements = element.find_all(['p', 'a']) if element else []
             elements_dict = {elements[i].text: elements[i+1].text for i in range(0, len(elements)-1, 2)}
