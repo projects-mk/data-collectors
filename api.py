@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 import os
 import logging
 from otomoto.main import OtomotoScraper
+from typing import List, Dict
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,14 +30,19 @@ def get_otomoto_data(start_page: int = 1, end_page: int = 500):
 
 
 @app.get("/api/v1/getdata/otomoto")
-async def scrape_otomoto_data(start_page: int, end_page: int):
-    try:
-        get_otomoto_data(start_page, end_page)
-        return {'msg': 'success'}
-    
-    except Exception as error:
-        logger.error(f"Error has occured {error}")
-        raise HTTPException(status_code=500, detail=str(error))
+async def scrape_otomoto_data():
+    pages_to_scrape = [(s,s+25) for s in range(1,476)]
+    results: List[Dict] = []
+
+    for start_page, end_page in pages_to_scrape:
+        try:
+            get_otomoto_data(start_page, end_page)
+            results.append({'start_page': start_page, 'end_page': end_page, 'status': 'success'})
+        except Exception as error:
+            logger.error(f"Error has occurred: {error}")
+            results.append({'start_page': start_page, 'end_page': end_page, 'status': 'error', 'error': str(error)})
+
+    return results
 
 
 @app.get("/test/api/v1/getdata/otomoto")
