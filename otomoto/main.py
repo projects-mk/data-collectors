@@ -32,6 +32,22 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
 ]
 
+
+def get_headers():
+
+    headers = {
+        'User-Agent': random.choice(USER_AGENTS),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Accept-Language': 'pl-PL,pl;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0',
+        'TE': 'Trailers',
+    }
+
+    return headers
+
 class OtomotoScraper:
     def __init__(self, start_page: int = 1, end_page: int = 500):
         self.data: List[Dict[str, Any]] = []
@@ -43,7 +59,7 @@ class OtomotoScraper:
             nest_asyncio.apply()
 
     async def fetch(self, session: aiohttp.ClientSession, url: str) -> str:
-        headers = {'User-Agent': random.choice(USER_AGENTS)}
+        headers = get_headers()
         async with session.get(url, headers=headers) as response:
             return await response.text()
 
