@@ -92,10 +92,19 @@ class OtomotoScraper:
         tasks = [self.parse(link) for link in self.links]
         await asyncio.gather(*tasks)
 
+    @staticmethod
+    def _keep_selected_columns(df: pd.DataFrame) -> pd.DataFrame:
+        columns_to_keep = ['Cena', 'Marka pojazdu', 'Model pojazdu', 'Wersja', 'Generacja',
+            'Rok produkcji', 'Przebieg', 'Pojemność skokowa', 'Rodzaj paliwa',
+            'Moc', 'Skrzynia biegów', 'Napęd', 'Spalanie W Mieście', 'Typ nadwozia','Liczba drzwi',
+            'Liczba miejsc', 'Kolor', 'Kraj pochodzenia','Stan', 'Uszkodzony']
+        return df[columns_to_keep]
+
     def to_sql(self, conn_str: str, table_name: str) -> None:
         engine = create_engine(conn_str)
         df = pd.DataFrame(self.data)
         df = df.dropna(how='all')
+        df = self._keep_selected_columns(df)
         logger.info('Collected total of %s records. Saving to database...', len(df))
         df.to_sql(table_name, engine, if_exists='append')
 
