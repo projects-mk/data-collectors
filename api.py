@@ -31,7 +31,7 @@ def get_otomoto_data(start_page: int = 1, end_page: int = 500):
 
 @app.get("/api/v1/getdata/otomoto")
 async def scrape_otomoto_data():
-    pages_to_scrape = [(s,s+25) for s in range(1,476)]
+    pages_to_scrape = [(s,s+2) for s in range(1,499)]
     results: List[Dict] = []
 
     for start_page, end_page in pages_to_scrape:
