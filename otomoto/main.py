@@ -8,10 +8,29 @@ import soupsieve as sv
 import logging
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
+import random
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+    "Mozilla/5.0 (iPad; CPU OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (Linux; Android 10; SM-A505FN) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.96 Mobile Safari/537.36",
+    "Mozilla/5.0 (Linux; Android 10; SM-A505GN) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36",
+    "Mozilla/5.0 (Linux; U; Android 10; en-us; SM-A505F) Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 Mobile Safari/537.36",
+    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101 Firefox/78.0",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/73.0",
+    "Mozilla/5.0 (Android 8.1.0; Mobile; rv:61.0) Gecko/61.0 Firefox/68.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
+    "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+]
 
 class OtomotoScraper:
     def __init__(self, start_page: int = 1, end_page: int = 500):
@@ -24,7 +43,8 @@ class OtomotoScraper:
             nest_asyncio.apply()
 
     async def fetch(self, session: aiohttp.ClientSession, url: str) -> str:
-        async with session.get(url) as response:
+        headers = {'User-Agent': random.choice(USER_AGENTS)}
+        async with session.get(url, headers=headers) as response:
             return await response.text()
 
     async def collect_links(self, page: int) -> List[str]:
@@ -34,7 +54,7 @@ class OtomotoScraper:
             soup = BeautifulSoup(html, 'html.parser')
             a_tags = soup.find_all('a')
             for tag in a_tags:
-                await asyncio.sleep(5)
+                # await asyncio.sleep(5)
                 if not type(tag.get('href')) == type(None) and 'https://www.otomoto.pl/osobowe/oferta/' in tag.get('href'):
                     links.append(tag.get('href'))
         return set(links)
@@ -43,14 +63,14 @@ class OtomotoScraper:
         pages = range(self.start_page, self.end_page+1)
         tasks = []
         for page in pages:
-            await asyncio.sleep(5)
+            # await asyncio.sleep(5)
             tasks.append(self.collect_links(page))
 
         pages_links = await asyncio.gather(*tasks)
         self.links = [link for links in pages_links for link in links]
 
     async def parse(self, link: str) -> None:
-        await asyncio.sleep(5)
+        # await asyncio.sleep(5)
         async with aiohttp.ClientSession() as session:
             html = await self.fetch(session, link)
 
