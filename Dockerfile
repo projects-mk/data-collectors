@@ -1,5 +1,6 @@
 FROM python:3.11-bookworm
 
+RUN apt update 
 WORKDIR /app
 
 COPY requirements.txt .
@@ -13,8 +14,6 @@ ENV PATH="/etc/venv/bin:$PATH"
 RUN uv pip install -r /app/requirements.txt
 
 COPY . .
-
-WORKDIR /app/src
 
 EXPOSE 4444
 RUN chmod +x /etc/venv/bin/activate
