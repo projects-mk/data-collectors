@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 otomoto/t.ipynb
 test.ipynb
+demo.ipynb
