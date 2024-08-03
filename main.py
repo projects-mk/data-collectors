@@ -10,12 +10,14 @@ logging.basicConfig(level=logging.DEBUG)
 
 gunicorn_logger = logging.getLogger("gunicorn.error")
 logger.handlers = gunicorn_logger.handlers
+
 if __name__ != "main":
     logger.setLevel(gunicorn_logger.level)
 else:
     logger.setLevel(logging.DEBUG)
 
-app = FastAPI()
+
+app = FastAPI(title=os.getenv("APP_NAME"), version=os.getenv("APP_VERSION"))
 
 
 def get_otomoto_data(start_page: int = 1, end_page: int = 500):
