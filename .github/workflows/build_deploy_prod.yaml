@@ -78,7 +78,7 @@ jobs:
 
       - name: Pull image
         run: >-
-          docker pull ${{ secrets.DOCKERHUB_LOGIN }}/${{ env.APP_NAME }}:latest
+          docker pull ${{ secrets.DOCKERHUB_LOGIN }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Deploy
         run: >-
