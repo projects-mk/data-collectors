@@ -54,7 +54,7 @@ jobs:
       - name: clear env
         run: |
           docker rm -f ${{ env.APP_NAME}}
-          docker image rm ${{ secrets.DOCKERHUB_LOGIN  }}/${{ env.APP_NAME}}:latest
+          docker image rm ${{ secrets.DOCKERHUB_LOGIN  }}/${{ env.IMAGE_NAME}}:latest
           docker system prune -af
           
   redeploy:
