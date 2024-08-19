@@ -42,7 +42,7 @@ class OtodomSpider(scrapy.Spider):
     def parse_mieszkania(self, response: Response):
         links = response.css("a::attr(href)").getall()
 
-        for link in links:
+        for link in set(links):
             if link.startswith("/pl/oferta"):
                 full_link = self.start_url + link
                 user_agent = random.choice(user_agents)
@@ -52,7 +52,8 @@ class OtodomSpider(scrapy.Spider):
 
         data = {
             'cena': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[1]/div[3]/div[1]/div[1]/strong/text()').get(),
-            'm2': response.xpath('//*[@id="__next"]/main/div[1]/div[1]/div[2]/div[1]/button[1]/div[2]/text()').get(),
+            'adres': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[1]/div[3]/div[2]/a/text()').get(),
+            'm2': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[1]/button[1]/div[2]/text()').get(),
             'pokoje': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[1]/button[2]/div[2]/text()').get(),
             'ogrzewanie': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[2]/div[1]/p[2]/text()').get(),
             'pietro': response.xpath('//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[2]/div[3]/p[2]/text()').get(),
@@ -76,7 +77,7 @@ class OtodomSpider(scrapy.Spider):
     def parse_domy(self, response: Response):
         links = response.css("a::attr(href)").getall()
 
-        for link in links:
+        for link in set(links):
             if link.startswith("/pl/oferta"):
                 full_link = self.start_url + link
                 print('link', full_link)
