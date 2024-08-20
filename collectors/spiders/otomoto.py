@@ -30,7 +30,7 @@ class OtomotoSpider(scrapy.Spider):
 
     def start_requests(self):
         search_domains = [
-            *[f"/osobowe?page={page}" for page in range(1, 2)],
+            *[f"/osobowe?page={page}" for page in range(1, 1400)],
         ]
         for domain in search_domains:
             user_agent = random.choice(user_agents)
