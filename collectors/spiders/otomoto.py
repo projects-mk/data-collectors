@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from lxml import html
-from utils import user_agents, generate_conn_string
+from collectors.utils import user_agents, generate_conn_string
 
 load_dotenv()
 conn_str = generate_conn_string(db="projects")
