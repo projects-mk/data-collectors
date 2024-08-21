@@ -12,7 +12,6 @@ load_dotenv()
 conn_str = generate_conn_string(db="projects")
 
 
-
 class OtomotoSpider(scrapy.Spider):
     name = "otomoto"
     allowed_domains = ["otomoto.pl"]

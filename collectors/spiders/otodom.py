@@ -10,7 +10,6 @@ load_dotenv()
 conn_str = generate_conn_string(db="projects")
 
 
-
 class OtodomSpider(scrapy.Spider):
     name = "otodom"
     allowed_domains = ["otodom.pl"]

@@ -21,8 +21,6 @@ load_dotenv()
 conn_str = generate_conn_string(db="gpw_app")
 
 
-
-
 def generate_urls(start_date: str, end_date: str) -> List[str]:
     """
     Generate a list of URLs based on a range of dates.

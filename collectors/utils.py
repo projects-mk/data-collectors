@@ -1,13 +1,15 @@
 import requests
 import os
 
+
 def generate_conn_string(db: str) -> str:
 
     url = os.genviron["VAULT_URL"]
     token = os.genviron["VAULT_TOKEN"]
 
     resp = requests.get(url, headers={"X-Vault-Token": token}).json()
-    return resp['data']['data']['postgres'] + db
+    return resp["data"]["data"]["postgres"] + db
+
 
 user_agents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",

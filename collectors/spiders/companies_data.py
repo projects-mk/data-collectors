@@ -22,9 +22,6 @@ load_dotenv()
 conn_str = os.getenv("PG_CONN_STRING")
 
 
-
-
-
 class CompaniesDataSpider(scrapy.Spider):
     name = "companies-data"
     allowed_domains = ["biznesradar.pl"]
