@@ -100,9 +100,7 @@ class CompaniesDataSpider(scrapy.Spider):
 
     def clean_df(self, df: pd.DataFrame, company: str) -> pd.DataFrame:
         df = df.rename({"Unnamed: 0": " ( kategorie"}, axis=1)
-
         df = df.drop(columns=[col for col in df.columns if "Unnamed" in col])
-
         df.columns = [self.correct_col_name(col) for col in df.columns]
 
         for col in df.columns:
@@ -118,23 +116,25 @@ class CompaniesDataSpider(scrapy.Spider):
     def extract_company_name(self, url: str) -> str:
         return url.split("/")[-1]
 
+    def extract_data(self, company: str, response: Response) -> pd.DataFrame:
+        for i in range(4):
+            try:
+                df = pd.read_html(response.body)[i].fillna(0)
+                df = self.clean_df(df, company)
+            except Exception:
+                pass
+
     def collect_bs_info(self, response: Response):
         company = self.extract_company_name(response.url)
-        df = pd.read_html(response.body)[1].fillna(0)
-        df = self.clean_df(df, company)
-
+        df = self.extract_data(company, response)
         df.to_sql("companies_bs_raw", con=conn_str, if_exists="append")
 
     def collect_pl_info(self, response: Response):
         company = self.extract_company_name(response.url)
-        df = pd.read_html(response.body)[2].fillna(0)
-        df = self.clean_df(df, company)
-
+        df = self.extract_data(company, response)
         df.to_sql("companies_pl_raw", con=conn_str, if_exists="append")
 
     def collect_cf_info(self, response: Response):
         company = self.extract_company_name(response.url)
-        df = pd.read_html(response.body)[0].fillna(0)
-        df = self.clean_df(df, company)
-
+        df = self.extract_data(company, response)
         df.to_sql("companies_cf_raw", con=conn_str, if_exists="append")
