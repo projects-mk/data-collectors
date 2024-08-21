@@ -67,17 +67,18 @@ class CompaniesDataSpider(scrapy.Spider):
         )
 
     def clean_data(self, s: str | int | float):
-
+        """Clean the data by handling specific string cases and converting to appropriate types."""
         if not isinstance(s, str):
             return s
 
+        # Remove specific keywords and anything following them
         for keyword in ["r/r", "k/k"]:
             if keyword in s:
                 s = s.split(keyword)[0]
                 break
 
+        # Clean up whitespace and try to convert to int or float
         s = s.replace(" ", "").strip()
-
         try:
             s = int(s)
         except ValueError:
@@ -89,20 +90,18 @@ class CompaniesDataSpider(scrapy.Spider):
         return s
 
     def correct_col_name(self, col: str) -> str:
+        """Correct the column name according to predefined rules."""
         col_name = (
             col.strip().split("(")[1].replace(")", "").split(" ")[1].replace("*", "")
         )
-
-        if col_name != "kategorie":
-            return "20" + col_name
-
-        return col_name
+        return "20" + col_name if col_name != "kategorie" else col_name
 
     def clean_df(self, df: pd.DataFrame, company: str) -> pd.DataFrame:
+        """Clean and process the DataFrame by renaming, dropping, transforming, and adding necessary columns."""
         df = df.rename({"Unnamed: 0": " ( kategorie"}, axis=1)
         df = df.drop(columns=[col for col in df.columns if "Unnamed" in col])
-        df.columns = [self.correct_col_name(col) for col in df.columns]
 
+        df.columns = [self.correct_col_name(col) for col in df.columns]
         for col in df.columns:
             df[col] = df[col].apply(lambda x: self.clean_data(x))
 
@@ -110,19 +109,25 @@ class CompaniesDataSpider(scrapy.Spider):
         df.columns = df.iloc[0]
         df = df.iloc[1:]
         df["firma"] = company
-
-        return df
+        return df.fillna(0)
 
     def extract_company_name(self, url: str) -> str:
+        """Extract the company name from the provided URL."""
         return url.split("/")[-1]
 
-    def extract_data(self, company: str, response: Response) -> pd.DataFrame:
-        for i in range(4):
+    def extract_data(self, company: str, response) -> pd.DataFrame:
+        """Attempt to extract and clean data from multiple HTML tables until successful."""
+        df = pd.DataFrame()
+
+        for i in range(4):  # Attempt up to 4 tables
             try:
-                df = pd.read_html(response.body)[i].fillna(0)
+                df = pd.read_html(response.body)[i]
                 df = self.clean_df(df, company)
-            except Exception:
-                pass
+                break
+            except Exception as e:
+                print(f"Error processing table index {i}: {e}")
+
+        return df
 
     def collect_bs_info(self, response: Response):
         company = self.extract_company_name(response.url)
