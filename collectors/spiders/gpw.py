@@ -13,11 +13,11 @@ import pytz
 from datetime import datetime
 from collectors.utils import user_agents, generate_conn_string
 
+load_dotenv()
+
 warsaw_tz = pytz.timezone("Europe/Warsaw")
 current_time_warsaw = datetime.now(tz=warsaw_tz).strftime("%d-%m-%Y")
 
-
-load_dotenv()
 conn_str = generate_conn_string(db="gpw_app")
 
 
@@ -82,7 +82,7 @@ class GpwSpider(scrapy.Spider):
         stop=stop_after_attempt(10),
         wait=wait_fixed(2),
     )
-    def make_request_with_retry(self, url, user_agent):
+    def make_request_with_retry(self, url: str, user_agent: str):
         return scrapy.Request(
             url=url, headers={"User-Agent": user_agent}, callback=self.parse
         )
