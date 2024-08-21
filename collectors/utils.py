@@ -1,6 +1,8 @@
 import requests
 import os
-
+from pandas import DataFrame
+import time
+import sqlalchemy
 
 def generate_conn_string(db: str) -> str:
 
@@ -25,3 +27,17 @@ user_agents = [
     "Mozilla/5.0 (Linux; U; Android 11; en-us; SM-G973U Build/RP1A.200720.012) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
 ]
+
+def save_to_db(df: DataFrame, table_name:str, conn_str: str, if_exist: str):
+
+    retries = 0
+    while True:
+        if retries>=5:
+            break 
+        try:
+            df.to_sql(table_name, con=conn_str, if_exists=if_exist)
+            break
+        
+        except sqlalchemy.exc.OperationalError:
+            time.sleep(15)
+            retries+=1

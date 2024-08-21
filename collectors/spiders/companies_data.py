@@ -19,6 +19,31 @@ load_dotenv()
 conn_str = generate_conn_string(db="gpw_app")
 
 
+def rename_duplicates(columns: list):
+    """
+    Rename duplicate column names by appending a suffix _1, _2, etc.
+
+    Parameters:
+        columns (pd.Index or list): The list of column names to be processed.
+
+    Returns:
+        pd.Index: A new Index with renamed duplicate columns.
+    """
+    counts = {}
+    new_columns = []
+
+    for col in columns:
+        if col in counts:
+            counts[col] += 1
+            new_column_name = f"{col}_{counts[col]}"
+            new_columns.append(new_column_name)
+        else:
+            counts[col] = 0
+            new_columns.append(col)
+
+    return pd.Index(new_columns)
+
+
 class CompaniesDataSpider(scrapy.Spider):
     name = "companies-data"
     allowed_domains = ["biznesradar.pl"]
@@ -102,12 +127,15 @@ class CompaniesDataSpider(scrapy.Spider):
         df = df.drop(columns=[col for col in df.columns if "Unnamed" in col])
 
         df.columns = [self.correct_col_name(col) for col in df.columns]
-        for col in df.columns:
-            df[col] = df[col].apply(lambda x: self.clean_data(x))
 
         df = df.T
         df.columns = df.iloc[0]
         df = df.iloc[1:]
+        df.columns = rename_duplicates(df.columns)
+
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: self.clean_data(x))
+
         df["firma"] = company
         return df.fillna(0)
 
@@ -123,6 +151,7 @@ class CompaniesDataSpider(scrapy.Spider):
             try:
                 df = pd.read_html(response.body)[i]
                 df = self.clean_df(df, company)
+
                 break
             except Exception as e:
                 print(f"Error processing table index {i}: {e}")
