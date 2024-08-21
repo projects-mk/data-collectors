@@ -11,7 +11,7 @@ import re
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import pytz
 from datetime import datetime
-from utils import user_agents, generate_conn_string
+from collectors.utils import user_agents, generate_conn_string
 
 warsaw_tz = pytz.timezone("Europe/Warsaw")
 current_time_warsaw = datetime.now(tz=warsaw_tz).strftime("%d-%m-%Y")

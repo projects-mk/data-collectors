@@ -4,7 +4,7 @@ import random
 import pandas as pd
 import os
 from dotenv import load_dotenv
-from utils import user_agents, generate_conn_string
+from collectors.utils import user_agents, generate_conn_string
 
 load_dotenv()
 conn_str = generate_conn_string(db="projects")
