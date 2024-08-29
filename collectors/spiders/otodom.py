@@ -92,7 +92,7 @@ class OtodomSpider(scrapy.Spider):
                 '//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[2]/div[9]/p[2]/text()'
             ).get(),
             "rok_budowy": response.xpath(
-                '//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[2]/div[9]/p[2]/text()'
+                '//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[3]/div[1]/div/div/div[1]/p[2]/text()'
             ).get(),
             "winda": response.xpath(
                 '//*[@id="__next"]/main/div[3]/div[1]/div[2]/div[3]/div[1]/div/div/div[3]/p[2]/text()'
